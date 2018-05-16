@@ -20,7 +20,7 @@ var oscguapo;
 
 function setup() {
   createCanvas(720, 400);
-  frameRate(25);
+  frameRate(50);
   w = 5;
   coloresR = ['#FFFFFF','#FFBFBF','#FF7F7F','#FF4040','#FF0000','#BF0000','#7F0000','#400000'];
   coloresV = ['#FFFFFF','#BFFFBF','#7FFF7F','#40FF40','#00FF00','#00BF00','#007F00','#004000'];
