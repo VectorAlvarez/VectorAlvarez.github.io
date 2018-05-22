@@ -53,14 +53,18 @@ var buttonI4; // Botón para introducir código
 var buttonE4; // Botón para empezar/pausar
 
 var oscguapo; //Oscilador
-var empezar;
+//var empezar;
 var ancho; //ancho de cada tablero
 var alto; //alto de cada tablero
 // var tg; //tablero gráfico, el "lienzo" de cada tablero
+var FiltSlider;
+
 
 h= new Array; //array de hormigas
 t= new Array; //array de tableros
-tg= new Array //array de 'lienzos'
+tg= new Array; //array de 'lienzos'
+oscguapo= new Array; //array de osciladores
+empezar=new Array;
 //buttonD= new Array;
 //buttonI= new Array;
 //buttonE= new Array;
@@ -70,7 +74,10 @@ n=4;
 pasoPixel=5;
 ancho=400;
 alto=400;
-empezar=false;
+for (var i=1; i<=n; i++){
+empezar[i]=false; 
+}
+
 
 
 
@@ -87,10 +94,10 @@ empezar=false;
  
 
 function setup() {
-  frameRate (1200);
+  frameRate (20);
   createCanvas(900,900);
   for (var i=1; i<=n; i++){
-     h[i]= new Hormiga (floor(ancho/(2*pasoPixel)),floor(alto/(2*pasoPixel)),0,-1,1,basica,coloresV);
+     h[i]= new Hormiga (floor(ancho/(2*pasoPixel)),floor(alto/(2*pasoPixel)),0,-1,8,basica,coloresV);
      t[i]= new Tablero (ancho,alto,pasoPixel);
      tg[i]=createGraphics(ancho,alto);
      tg[i].background(240);
@@ -121,11 +128,11 @@ function setup() {
   buttonE1 = createButton('Empezar');
   buttonE1.position(10, 600 + 10);
   buttonE1.mousePressed(() => {
-    if (empezar) {
-      empezar = false;
+    if (empezar[1]) {
+      empezar[1] = false;
       buttonE1.html('Continuar');
     } else {
-      empezar = true;
+      empezar[1] = true;
       buttonE1.html('Pausa');
     }
   });
@@ -148,11 +155,11 @@ function setup() {
   buttonE2 = createButton('Empezar');
   buttonE2.position(10, 600 + 30);
   buttonE2.mousePressed(() => {
-    if (empezar) {
-      empezar = false;
+    if (empezar[2]) {
+      empezar[2] = false;
       buttonE2.html('Continuar');
     } else {
-      empezar = true;
+      empezar[2] = true;
       buttonE2.html('Pausa');
     }
   }); 
@@ -176,11 +183,11 @@ function setup() {
   buttonE3 = createButton('Empezar');
   buttonE3.position(10, 600 + 60);
   buttonE3.mousePressed(() => {
-    if (empezar) {
-      empezar = false;
+    if (empezar[3]) {
+      empezar[3] = false;
       buttonE3.html('Continuar');
     } else {
-      empezar = true;
+      empezar[3] = true;
       buttonE3.html('Pausa');
     }
   });
@@ -203,30 +210,43 @@ function setup() {
   buttonE4 = createButton('Empezar');
   buttonE4.position(10, 600 + 90);
   buttonE4.mousePressed(() => {
-    if (empezar) {
-      empezar = false;
+    if (empezar[4]) {
+      empezar[4] = false;
       buttonE4.html('Continuar');
     } else {
-      empezar = true;
+      empezar[4] = true;
       buttonE4.html('Pausa');
     }
   });
 
+ /*
+  FiltSlider=createSlider(0,255,100);
+  FiltSlider.position (10,720);
+  var ataque=(FiltSlider.value()/255);
+  env=new p5.Env();
+  env.setADSR(ataque); 
+  */
+
   //pintamos de blanco (creo) el tablero
 
-  for ( var i = 0; i < t[1].columnas;i++) {
-   for ( var j = 0; j < t[1].filas;j++) {
-     fill(255); 
-     stroke(255);
-     rect(i*pasoPixel, j*pasoPixel, pasoPixel-1, pasoPixel-1);
+  for ( var k = 1; k <=n; k++){
+    for ( var i = 0; i < t[k].columnas;i++) {
+      for ( var j = 0; j < t[k].filas;j++) {
+        fill(255); 
+        stroke(255);
+        tg[k].rect(i*pasoPixel, j*pasoPixel, pasoPixel-1, pasoPixel-1);
+      }
     }
-  }
-
+  }  
  textSize(15);
-   oscguapo = new p5.Oscillator();
-  oscguapo.setType('triangle');
+  
+  for (var i=1;i<=n;i++){
+  oscguapo[i] = new p5.Oscillator();
+  oscguapo[i].setType('triangle');
   //oscguapo.amp(0.5,0.5);
-  oscguapo.start();
+  oscguapo[i].start();
+  oscguapo[i].pan(-1+2*(i-1)/(n-1))
+  }
 
 }
 
@@ -240,24 +260,26 @@ function draw() {
 
 
 
+
   for (var i=1; i<=n; i++){
   tamdir = h[i].codigo.length;
   fill(0);
   noStroke();
   text(h[i].codigo, 200,29);
-  if (empezar) {
-    mover();
+  if (empezar[i] && frameCount%h[i].ratio==0) {
+    mover(i);
     tg[i].fill(h[i].paleta[t[i].reticula[h[i].posicionX][h[i].posicionY]]);
     tg[i].stroke(h[i].paleta[t[i].reticula[h[i].posicionX][h[i].posicionY]]);
     tg[i].rect(h[i].posicionX*pasoPixel, h[i].posicionY*pasoPixel, pasoPixel-1, pasoPixel-1);
-    oscguapo.freq(h[i].escala[t[i].reticula[h[i].posicionX][h[i].posicionY]]);
-  } else oscguapo.freq(0);
+    oscguapo[i].freq(h[i].escala[t[i].reticula[h[i].posicionX][h[i].posicionY]]);
+    //oscguapo[i].amp(env);
+  } else oscguapo[i].freq(0);
 }
 
 // El movimiento de la hormiguita
-function mover() {
+function mover(i) {
   //falta bucle
-  for (var i=1; i<=n; i++){
+
   h[i].posicionX += h[i].direccionX;
   h[i].posicionY += h[i].direccionY;
   if ((h[i].posicionX >= t[i].columnas)) h[i].posicionX = 0;
@@ -278,7 +300,7 @@ function mover() {
   }
   t[i].reticula[h[i].posicionX][h[i].posicionY] += 1;
   if ((t[i].reticula[h[i].posicionX][h[i].posicionY] == tamdir)) t[i].reticula[h[i].posicionX][h[i].posicionY] = 0;
-}
+
 }
 }
 
