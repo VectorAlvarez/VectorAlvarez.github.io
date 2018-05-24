@@ -51,6 +51,7 @@ var buttonE3; // Botón para empezar/pausar
 var buttomD4; // Botón para introducir código
 var buttonI4; // Botón para introducir código
 var buttonE4; // Botón para empezar/pausar
+var buttonReset //Botón reset
 
 var oscguapo; //Oscilador
 //var empezar;
@@ -59,13 +60,30 @@ var alto; //alto de cada tablero
 // var tg; //tablero gráfico, el "lienzo" de cada tablero
 var FiltSlider;
 var dropdownRatio1;
+var dropdownEscala1;
+var dropdownRatio2;
+var dropdownEscala2;
+var dropdownRatio3;
+var dropdownEscala3;
+var dropdownRatio4;
+var dropdownEscala4;
+var dropdownOCT2;
+var dropdownOCT3;
+var dropdowntempo;
 var ataque;
+
+var forma1;
+var forma2;
+var forma3;
+var forma4;
+
 
 
 
 h= new Array; //array de hormigas
 t= new Array; //array de tableros
 tg= new Array; //array de 'lienzos'
+ch= new Array // array de 'lienzos' de controladores
 oscguapo= new Array; //array de osciladores
 empezar=new Array;
 //env=new p5.Env();
@@ -87,7 +105,9 @@ empezar[i]=false;
 
 //Escalas
  basica = [0, 110.000, 146.832, 195.998, 261.262, 349.228, 246.922, 444.000];
-
+ blues = [0, 220.000, 195.998, 261.626, 293.665,311.127, 329.628, 391.995];
+ simetrica = [0, 220.000, 246.942, 277.183, 311.127, 349.228, 391.995, 444.000];
+ exotica= [0, 293.665, 329.628, 349.228, 415.305, 444.000, 493.883, 523.251 ]
  //Paleta
   coloresR = ['#FFFFFF','#FFBFBF','#FF7F7F','#FF4040','#FF0000','#BF0000','#7F0000','#400000'];
   coloresV = ['#FFFFFF','#BFFFBF','#7FFF7F','#40FF40','#00FF00','#00BF00','#007F00','#004000'];
@@ -99,12 +119,14 @@ empezar[i]=false;
 
 function setup() {
   frameRate (20);
-  createCanvas(900,900);
+  createCanvas(1200,1500);
   for (var i=1; i<=n; i++){
      h[i]= new Hormiga (floor(ancho/(2*pasoPixel)),floor(alto/(2*pasoPixel)),0,-1,8,basica,coloresV);
      t[i]= new Tablero (ancho,alto,pasoPixel);
      tg[i]=createGraphics(ancho,alto);
      tg[i].background(240);
+     ch[i]=createGraphics(ancho/2,alto/2);
+     empezar[i]=false;
   }
 
   //todo esto de los botones y pintar el tablero base
@@ -117,21 +139,21 @@ function setup() {
 
   //PRIMER BOTON
 
-  buttonD1 = createButton('Derecha');
-  buttonD1.position(10, 500+10);
-  buttonD1.mousePressed(() => {
+  buttonD1 = createButton('DE');
+  buttonD1.position(55, 855);
+  buttonD1.mouseClicked(() => {
     h[1].codigo.push('D');
   });
 
-  buttonI1 = createButton('Izquierda');
-  buttonI1.position(100, 500+10);
-  buttonI1.mousePressed(() => {
+  buttonI1 = createButton('IZ');
+  buttonI1.position(105, 855);
+  buttonI1.mouseClicked(() => {
     h[1].codigo.push('I');
   });
   
   buttonE1 = createButton('Empezar');
-  buttonE1.position(10, 600 + 10);
-  buttonE1.mousePressed(() => {
+  buttonE1.position(155,855 );
+  buttonE1.mouseClicked(() => {
     if (empezar[1]) {
       empezar[1] = false;
       buttonE1.html('Continuar');
@@ -142,24 +164,27 @@ function setup() {
     }
   });
 
+  // PANEL CONTROL HORMIGA 1
+  ch[1].background('#7FFF7F'); 
+  image (ch[1],50,850); 
 
   //SEGUNDO BOTON
 
-  buttonD2 = createButton('Derecha');
-  buttonD2.position(10, 500+30);
-  buttonD2.mousePressed(() => {
+  buttonD2 = createButton('DE');
+  buttonD2.position(275, 855);
+  buttonD2.mouseClicked(() => {
     h[2].codigo.push('D');
   });
 
-  buttonI2 = createButton('Izquierda');
-  buttonI2.position(100, 500+30);
-  buttonI2.mousePressed(() => {
+  buttonI2 = createButton('IZ');
+  buttonI2.position(325, 855);
+  buttonI2.mouseClicked(() => {
     h[2].codigo.push('I');
   });
   
   buttonE2 = createButton('Empezar');
-  buttonE2.position(10, 600 + 30);
-  buttonE2.mousePressed(() => {
+  buttonE2.position(375, 855);
+  buttonE2.mouseClicked(() => {
     if (empezar[2]) {
       empezar[2] = false;
       buttonE2.html('Continuar');
@@ -170,25 +195,28 @@ function setup() {
     }
   }); 
 
+  //CONTROL HORMIGA 2
+  ch[2].background('#FF7F7F'); 
+  image (ch[2],270,850); 
 
-  
+ 
   //TERCER BOTON
 
-  buttonD3 = createButton('Derecha');
-  buttonD3.position(10, 500+60);
-  buttonD3.mousePressed(() => {
+  buttonD3 = createButton('DE');
+  buttonD3.position(495, 855);
+  buttonD3.mouseClicked(() => {
     h[3].codigo.push('D');
   });
 
-  buttonI3 = createButton('Izquierda');
-  buttonI3.position(100, 500+60);
-  buttonI3.mousePressed(() => {
+  buttonI3 = createButton('IZ');
+  buttonI3.position(545, 855);
+  buttonI3.mouseClicked(() => {
     h[3].codigo.push('I');
   });
   
   buttonE3 = createButton('Empezar');
-  buttonE3.position(10, 600 + 60);
-  buttonE3.mousePressed(() => {
+  buttonE3.position(595, 855);
+  buttonE3.mouseClicked(() => {
     if (empezar[3]) {
       empezar[3] = false;
       buttonE3.html('Continuar');
@@ -200,23 +228,27 @@ function setup() {
   });
 
 
+  //CONTROL HORMIGA 3
+  ch[3].background('#7F7FFF'); 
+  image (ch[3],490,850); 
+
   //CUARTO BOTON
 
-  buttonD4 = createButton('Derecha');
-  buttonD4.position(10, 500+90);
-  buttonD4.mousePressed(() => {
+  buttonD4 = createButton('DE');
+  buttonD4.position(715, 855 );
+  buttonD4.mouseClicked(() => {
     h[4].codigo.push('D');
   });
 
-  buttonI4 = createButton('Izquierda');
-  buttonI4.position(100, 500+90);
-  buttonI4.mousePressed(() => {
+  buttonI4 = createButton('IZ');
+  buttonI4.position(765, 855);
+  buttonI4.mouseClicked(() => {
     h[4].codigo.push('I');
   });
   
   buttonE4 = createButton('Empezar');
-  buttonE4.position(10, 600 + 90);
-  buttonE4.mousePressed(() => {
+  buttonE4.position(815, 855);
+  buttonE4.mouseClicked(() => {
     if (empezar[4]) {
       empezar[4] = false;
       buttonE4.html('Continuar');
@@ -227,18 +259,20 @@ function setup() {
     }
   });
 
+  //CONTROL HORMIGA 4
+  ch[4].background('#FF7FFF'); 
+  image (ch[4],710,850); 
 
 //SLIDER PARA MODULAR
 //  FiltSlider=createSlider(0,255,100);
-//  FiltSlider.position (10,720);
-  
+//  FiltSlider.position (10,720);  
   
   
   
 
-//DROPDOWN RATIO
+//DROPDOWN RATIO 1
   dropdownRatio1 = createSelect();
-  dropdownRatio1.position (10,740);
+  dropdownRatio1.position (55,900);
   dropdownRatio1.option(1);
   dropdownRatio1.option(2);
   dropdownRatio1.option(3);
@@ -246,15 +280,347 @@ function setup() {
   dropdownRatio1.option(6);
   dropdownRatio1.option(8);
   dropdownRatio1.option(9);
+  dropdownRatio1.option(10);
   dropdownRatio1.option(12);
+  dropdownRatio1.option(14);
   dropdownRatio1.option(15);
   dropdownRatio1.option(16);
   dropdownRatio1.option(18);
-  dropdownRatio1.changed(mySelectRatio);
+  dropdownRatio1.changed(mySelectRatio1);
 
-  function mySelectRatio () {
+  function mySelectRatio1 () {
     h[1].ratio=dropdownRatio1.value();
   }
+
+//DROPDOWN ESCALA 1
+  dropdownEscala1 = createSelect();
+  dropdownEscala1.position (115,900);
+  dropdownEscala1.option("basica");
+  dropdownEscala1.option("blues");
+  dropdownEscala1.option("simetrica");
+  dropdownEscala1.option("exotica");
+  dropdownEscala1.changed(mySelectEscala1);
+
+  function mySelectEscala1 () {
+    switch(dropdownEscala1.value()){
+      case "basica":
+      h[1].escala=basica;
+      break;
+      case "blues":
+      h[1].escala=blues;
+      break;
+      case "simetrica":
+      h[1].escala=simetrica;
+      break;
+      case "exotica":
+      h[1].escala=exotica;
+      break;
+
+    }
+    
+  }
+
+  //FORMA OSCILADOR 1
+  dropdownOSC1 = createSelect();
+  dropdownOSC1.position (55,940);
+  dropdownOSC1.option("TR");
+  dropdownOSC1.option("SQ");
+  dropdownOSC1.option("SW");
+  dropdownOSC1.option("SN");
+  dropdownOSC1.changed(mySelectOSC1);  
+
+  function mySelectOSC1 () {
+
+    switch (dropdownOSC1.value()){
+      case "TR":
+      oscguapo[1].setType('triangle');
+      break;
+      case "SQ":
+      oscguapo[1].setType('square');
+      break;
+      case "SW":
+      oscguapo[1].setType('sawtooth');
+      break;
+      case "SN":
+      oscguapo[1].setType('sine');
+      break;
+
+
+    }
+  }
+
+//DROPDOWN RATIO 2
+  dropdownRatio2 = createSelect();
+  dropdownRatio2.position (275,900);
+  dropdownRatio2.option(1);
+  dropdownRatio2.option(2);
+  dropdownRatio2.option(3);
+  dropdownRatio2.option(4);
+  dropdownRatio2.option(6);
+  dropdownRatio2.option(8);
+  dropdownRatio2.option(9);
+  dropdownRatio2.option(10);
+  dropdownRatio2.option(12);
+  dropdownRatio2.option(14);
+  dropdownRatio2.option(15);
+  dropdownRatio2.option(16);
+  dropdownRatio2.option(18);
+  dropdownRatio2.changed(mySelectRatio2);
+
+  function mySelectRatio2 () {
+    h[2].ratio=dropdownRatio2.value();
+  }
+
+//DROPDOWN ESCALA 2
+  dropdownEscala2 = createSelect();
+  dropdownEscala2.position (330,900);
+  dropdownEscala2.option("basica");
+  dropdownEscala2.option("blues");
+  dropdownEscala2.option("simetrica");
+  dropdownEscala2.option("exotica");
+  dropdownEscala2.changed(mySelectEscala2);
+
+  function mySelectEscala2 () {
+    switch(dropdownEscala2.value()){
+      case "basica":
+      h[2].escala=basica;
+      break;
+      case "blues":
+      h[2].escala=blues;
+      break;
+      case "simetrica":
+      h[2].escala=simetrica;
+      break;
+      case "exotica":
+      h[2].escala=exotica;
+      break;
+
+    }
+    
+  }
+
+  //FORMA OSCILADOR 2
+  dropdownOSC2 = createSelect();
+  dropdownOSC2.position (275,940);
+  dropdownOSC2.option("TR");
+  dropdownOSC2.option("SQ");
+  dropdownOSC2.option("SW");
+  dropdownOSC2.option("SN");
+  dropdownOSC2.changed(mySelectOSC2);  
+
+  function mySelectOSC2 () {
+
+    switch (dropdownOSC2.value()){
+      case "TR":
+      oscguapo[2].setType('triangle');
+      break;
+      case "SQ":
+      oscguapo[2].setType('square');
+      break;
+      case "SW":
+      oscguapo[2].setType('sawtooth');
+      break;
+      case "SN":
+      oscguapo[2].setType('sine');
+      break;
+
+
+    }
+  }
+  //OCTAVA OSCILADOR 2
+  dropdownOCT2 = createSelect();
+  dropdownOCT2.position (335,940);
+  dropdownOCT2.option(1/2);
+  dropdownOCT2.option(1);
+  dropdownOCT2.option(2);
+  dropdownOCT2.changed(mySelectOCT2);
+
+  function mySelectOCT2 () {
+    for (i=1;i<=8;i++)
+    {
+      h[2].escala[i]=dropdownOCT2.value()*h[2].escala[i]
+    }
+  }
+
+
+
+//DROPDOWN RATIO 3
+  dropdownRatio3 = createSelect();
+  dropdownRatio3.position (495,900);
+  dropdownRatio3.option(1);
+  dropdownRatio3.option(2);
+  dropdownRatio3.option(3);
+  dropdownRatio3.option(4);
+  dropdownRatio3.option(6);
+  dropdownRatio3.option(8);
+  dropdownRatio3.option(9);
+  dropdownRatio3.option(10);
+  dropdownRatio3.option(12);
+  dropdownRatio3.option(14);
+  dropdownRatio3.option(15);
+  dropdownRatio3.option(16);
+  dropdownRatio3.option(18);
+  dropdownRatio3.changed(mySelectRatio3);
+
+  function mySelectRatio3 () {
+    h[3].ratio=dropdownRatio3.value();
+  }
+
+//DROPDOWN ESCALA 3
+  dropdownEscala3 = createSelect();
+  dropdownEscala3.position (550,900);
+  dropdownEscala3.option("basica");
+  dropdownEscala3.option("blues");
+  dropdownEscala3.option("simetrica");
+  dropdownEscala3.option("exotica");
+  dropdownEscala3.changed(mySelectEscala3);
+
+  function mySelectEscala3 () {
+    switch(dropdownEscala3.value()){
+      case "basica":
+      h[3].escala=basica;
+      break;
+      case "blues":
+      h[3].escala=blues;
+      break;
+      case "simetrica":
+      h[3].escala=simetrica;
+      break;
+      case "exotica":
+      h[3].escala=exotica;
+      break;
+
+    }
+    
+  }
+
+  //FORMA OSCILADOR 3
+  dropdownOSC3 = createSelect();
+  dropdownOSC3.position (495,940);
+  dropdownOSC3.option("TR");
+  dropdownOSC3.option("SQ");
+  dropdownOSC3.option("SW");
+  dropdownOSC3.option("SN");
+  dropdownOSC3.changed(mySelectOSC3);  
+
+  function mySelectOSC3 () {
+
+    switch (dropdownOSC3.value()){
+      case "TR":
+      oscguapo[3].setType('triangle');
+      break;
+      case "SQ":
+      oscguapo[3].setType('square');
+      break;
+      case "SW":
+      oscguapo[3].setType('sawtooth');
+      break;
+      case "SN":
+      oscguapo[3].setType('sine');
+      break;
+
+
+    }
+  }
+
+    //OCTAVA OSCILADOR 3
+  dropdownOCT3 = createSelect();
+  dropdownOCT3.position (555,940);
+  dropdownOCT3.option(1/2);
+  dropdownOCT3.option(1);
+  dropdownOCT3.option(2);
+  dropdownOCT3.changed(mySelectOCT3);
+
+  function mySelectOCT3 () {
+    for (i=1;i<=8;i++)
+    {
+      h[3].escala[i]=dropdownOCT3.value()*h[3].escala[i]
+    }
+  }
+
+  //DROPDOWN RATIO 4
+  dropdownRatio4 = createSelect();
+  dropdownRatio4.position (715,900);
+  dropdownRatio4.option(1);
+  dropdownRatio4.option(2);
+  dropdownRatio4.option(3);
+  dropdownRatio4.option(4);
+  dropdownRatio4.option(6);
+  dropdownRatio4.option(8);
+  dropdownRatio4.option(9);
+  dropdownRatio4.option(10);
+  dropdownRatio4.option(12);
+  dropdownRatio4.option(14);
+  dropdownRatio4.option(15);
+  dropdownRatio4.option(16);
+  dropdownRatio4.option(18);
+  dropdownRatio4.changed(mySelectRatio4);
+
+  function mySelectRatio4 () {
+    h[4].ratio=dropdownRatio4.value();
+  }
+
+//DROPDOWN ESCALA 4
+  dropdownEscala4 = createSelect();
+  dropdownEscala4.position (770,900);
+  dropdownEscala4.option("basica");
+  dropdownEscala4.option("blues");
+  dropdownEscala4.option("simetrica");
+  dropdownEscala4.option("exotica");
+  dropdownEscala4.changed(mySelectEscala4);
+
+  function mySelectEscala4 () {
+    switch(dropdownEscala4.value()){
+      case "basica":
+      h[4].escala=basica;
+      break;
+      case "blues":
+      h[4].escala=blues;
+      break;
+      case "simetrica":
+      h[4].escala=simetrica;
+      break;
+      case "exotica":
+      h[4].escala=exotica;
+      break;
+
+    }
+    
+  }
+
+  //FORMA OSCILADOR 4
+  dropdownOSC4 = createSelect();
+  dropdownOSC4.position (715,940);
+  dropdownOSC4.option("TR");
+  dropdownOSC4.option("SQ");
+  dropdownOSC4.option("SW");
+  dropdownOSC4.option("SN");
+  dropdownOSC4.changed(mySelectOSC4);  
+
+  function mySelectOSC4 () {
+
+    switch (dropdownOSC4.value()){
+      case "TR":
+      oscguapo[4].setType('triangle');
+      break;
+      case "SQ":
+      oscguapo[4].setType('square');
+      break;
+      case "SW":
+      oscguapo[4].setType('sawtooth');
+      break;
+      case "SN":
+      oscguapo[4].setType('sine');
+      break;
+
+
+    }
+  }
+
+
+
+
+
 
 
   //pintamos de blanco (creo) el tablero
@@ -279,21 +645,69 @@ function setup() {
   
   }
 
+buttonReset = createButton('RESET');
+buttonReset.position(270,1070);
+buttonReset.mouseClicked(setup);
+
+dropdowntempo=createSelect();
+dropdowntempo.position(490,1070);
+dropdowntempo.option("muy lento");
+dropdowntempo.option("lento");
+dropdowntempo.option("medio");
+dropdowntempo.option("rapido");
+dropdowntempo.option("muy rapido");
+dropdowntempo.changed(mySelectTempo);
+
+
+  function mySelectTempo () {
+
+    switch (dropdowntempo.value()){
+      case "muy lento":
+      frameRate(2);
+      break;
+      case "lento":
+      frameRate(8);;
+      break;
+      case "medio":
+      frameRate(20);;
+      break;
+      case "rapido":
+      frameRate(40);
+      break;
+      case "muy rapido":
+      frameRate(100);
+      break;
+
+
+    }
+  }
+
+
 }
 
 //ojo, empezar tiene que ser de cada hormiga?
 
 function draw() {
-  image (tg[1],50,50);
-  image (tg[2],500,50);
-  image (tg[3],50,500);
-  image (tg[4],500,500);
+  image (tg[1],50,20);
+  image (tg[2],490,20);
+  image (tg[3],50,430);
+  image (tg[4],490,430);
+
+
+  //controladores
+ // ch[1].background(0,255,0); 
+  
+ 
 
 
 //ataque=((FiltSlider.value())/2550);
 //env.setADSR(ataque,0,0,0);
 //env.setRange(1,0); 
 //oscguapo[1].amp(env);
+  h[2].paleta=coloresR;
+  h[3].paleta=coloresA;
+  h[4].paleta=coloresRa;
+
 
   for (var i=1; i<=n; i++){
   tamdir = h[i].codigo.length;
@@ -335,8 +749,8 @@ function mover(i) {
     else                       {h[i].direccionX=-1; h[i].direccionY=0};
   }
   t[i].reticula[h[i].posicionX][h[i].posicionY] += 1;
-  if ((t[i].reticula[h[i].posicionX][h[i].posicionY] == tamdir)) t[i].reticula[h[i].posicionX][h[i].posicionY] = 0;
-
+  if (t[i].reticula[h[i].posicionX][h[i].posicionY] == tamdir) t[i].reticula[h[i].posicionX][h[i].posicionY] = 0;
+  if (t[i].reticula[h[i].posicionX][h[i].posicionY] == 8) t[i].reticula[h[i].posicionX][h[i].posicionY] = 0;
 }
 }
 
